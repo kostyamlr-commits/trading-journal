@@ -1,0 +1,34 @@
+name: בניית יומן מסחר - Windows
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    permissions:
+      contents: write
+    runs-on: windows-latest
+    steps:
+      - name: שכפול הקוד
+        uses: actions/checkout@v4
+
+      - name: התקנת Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: התקנת Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: בניית קובץ ההתקנה
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__
+          releaseName: 'יומן מסחר v__VERSION__'
+          releaseBody: 'קובץ התקנה אוטומטי - הורד את קובץ ה-.exe מתחת ל-Assets.'
+          releaseDraft: false
+          prerelease: false

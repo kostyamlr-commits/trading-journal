@@ -379,10 +379,28 @@ const {
 // פותר לחלוטין את הבעיה הידועה שבה localStorage על קבצי file:// אינו אמין -
 // כאן אין דפדפן בכלל, הקובץ נשמר ישירות ע"י קוד Rust בצד המערכת.
 // ============================================================
-const { invoke } = window.__TAURI__.core;
+
+/**
+ * מחכה עד ש-window.__TAURI__ באמת זמין לפני שמשתמשים בו.
+ * זה פותר תקלת תזמון ידועה: לפעמים קוד ה-JS שלנו רץ לפני שTauri
+ * מספיק להזריק את ה-API שלו ל-window, ואז קריאה ישירה הייתה קורסת.
+ */
+function waitForTauri() {
+  return new Promise((resolve) => {
+    function check() {
+      if (window.__TAURI__ && window.__TAURI__.core) {
+        resolve(window.__TAURI__.core);
+      } else {
+        setTimeout(check, 20);
+      }
+    }
+    check();
+  });
+}
 
 async function loadData() {
   try {
+    const { invoke } = await waitForTauri();
     const raw = await invoke('load_journal_data');
     if (!raw) return getDefaultData();
     return JSON.parse(raw);
@@ -394,6 +412,7 @@ async function loadData() {
 
 async function saveData(data) {
   try {
+    const { invoke } = await waitForTauri();
     await invoke('save_journal_data', { data: JSON.stringify(data) });
     return true;
   } catch (e) {
@@ -404,6 +423,7 @@ async function saveData(data) {
 
 async function getDataFileLocation() {
   try {
+    const { invoke } = await waitForTauri();
     return await invoke('get_data_file_location');
   } catch (e) {
     return null;

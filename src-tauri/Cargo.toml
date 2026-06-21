@@ -1,6 +1,6 @@
 [package]
 name = "trading-journal"
-version = "1.0.3"
+version = "1.0.4"
 description = "יומן מסחר אישי - Personal Trading Journal Desktop App"
 edition = "2021"
 

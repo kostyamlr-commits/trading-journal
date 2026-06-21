@@ -367,8 +367,7 @@ var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
 </script>
-<script>
-const {
+<script>const {
   useState,
   useEffect,
   useCallback
@@ -386,7 +385,7 @@ const {
  * מספיק להזריק את ה-API שלו ל-window, ואז קריאה ישירה הייתה קורסת.
  */
 function waitForTauri() {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     function check() {
       if (window.__TAURI__ && window.__TAURI__.core) {
         resolve(window.__TAURI__.core);
@@ -397,10 +396,11 @@ function waitForTauri() {
     check();
   });
 }
-
 async function loadData() {
   try {
-    const { invoke } = await waitForTauri();
+    const {
+      invoke
+    } = await waitForTauri();
     const raw = await invoke('load_journal_data');
     if (!raw) return getDefaultData();
     return JSON.parse(raw);
@@ -409,27 +409,30 @@ async function loadData() {
     return getDefaultData();
   }
 }
-
 async function saveData(data) {
   try {
-    const { invoke } = await waitForTauri();
-    await invoke('save_journal_data', { data: JSON.stringify(data) });
+    const {
+      invoke
+    } = await waitForTauri();
+    await invoke('save_journal_data', {
+      data: JSON.stringify(data)
+    });
     return true;
   } catch (e) {
     console.error('שגיאה בשמירת נתונים:', e);
     return false;
   }
 }
-
 async function getDataFileLocation() {
   try {
-    const { invoke } = await waitForTauri();
+    const {
+      invoke
+    } = await waitForTauri();
     return await invoke('get_data_file_location');
   } catch (e) {
     return null;
   }
 }
-
 function getDefaultData() {
   return {
     trades: [],
@@ -2488,15 +2491,21 @@ function App() {
       saveData(data);
     }
   }, [data]);
-
   if (isLoading || data === null) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: '#909090', fontSize: 15 }}>טוען את היומן שלך...</p>
-      </div>
-    );
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
+    }, /*#__PURE__*/React.createElement("p", {
+      style: {
+        color: '#909090',
+        fontSize: 15
+      }
+    }, "טוען את היומן שלך..."));
   }
-
   const stats = getSummaryStats(data.trades);
   const equityCurve = getEquityCurve(data.trades);
   const byHour = getPerformanceByHour(data.trades);
